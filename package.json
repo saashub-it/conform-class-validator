@@ -17,7 +17,7 @@
 	},
 	"scripts": {
 		"build": "rollup -c --silent",
-		"publish": "npm run build && lerna publish --no-private",
+		"publish": "npm run build && npm publish --access public",
 		"test": "vitest run"
 	},
 	"repository": {
@@ -44,12 +44,10 @@
 	},
 	"keywords": [
 		"constraint-validation",
-		"form",
 		"form-validation",
-		"html",
-		"progressive-enhancement",
 		"validation",
-		"class-validator"
+		"class-validator",
+		"conform+class-validator"
 	],
 	"sideEffects": false
 }
