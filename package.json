@@ -2,7 +2,7 @@
 	"name": "@saashub/conform-class-validator",
 	"description": "Conform helpers for integrating with class-validator",
 	"license": "MIT",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"main": "./lib/index.js",
 	"module": "./lib/index.mjs",
 	"types": "./lib/index.d.ts",
