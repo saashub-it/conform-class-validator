@@ -87,11 +87,11 @@ function Example() {
 
 #### Parameters
 
-| Property | Required | Definition                                                                                                          |
-|----------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `payload`  | true     | It could be either the FormData or URLSearchParams object depending on how the form is submitted.                   |
-| `schema`   | true     | `class-validator` model                                                                                             |
-| `async`    | false    | Set it to true if you want to parse the form data with validate method from the yup schema instead of validateSync. |
+| Property | Required | Definition                                                                                                                      |
+|----------|----------|---------------------------------------------------------------------------------------------------------------------------------|
+| `payload`  | true     | It could be either the FormData or URLSearchParams object depending on how the form is submitted.                               |
+| `schema`   | true     | `class-validator` model                                                                                                         |
+| `async`    | false    | Set it to true if you want to parse the form data with validate method from the `class-validator` schema instead of validateSync. |
 
 
 
