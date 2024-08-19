@@ -11,13 +11,15 @@ class ConformClassValidatorModel<T extends Record<string, any>> {
 type TConformClassValidatorModelConstructor<T extends Record<string, any>> =
 	new (data: T, ...args: any[]) => ConformClassValidatorModel<T>;
 
+type TError = Record<string, string[]>;
+
 export function parseWithClassValidator<T extends Record<string, any>>(
 	payload: FormData,
 	config: {
 		schema: TConformClassValidatorModelConstructor<T>;
 		async?: false;
 	},
-): Submission<ConformClassValidatorModel<T>, string[]>;
+): Submission<T, string[]>;
 
 export function parseWithClassValidator<T extends Record<string, any>>(
 	payload: FormData,
@@ -25,7 +27,7 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 		schema: TConformClassValidatorModelConstructor<T>;
 		async: true;
 	},
-): Promise<Submission<ConformClassValidatorModel<T>, string[]>>;
+): Promise<Submission<T, string[]>>;
 
 export function parseWithClassValidator<T extends Record<string, any>>(
 	payload: FormData,
@@ -34,15 +36,15 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 		async?: boolean;
 	},
 ):
-	| Submission<ConformClassValidatorModel<T>, string[]>
-	| Promise<Submission<ConformClassValidatorModel<T>, string[]>> {
-	return parse<ConformClassValidatorModel<T>, string[]>(payload, {
+	| Submission<T, string[]>
+	| Promise<Submission<T, string[]>> {
+	return parse<T, string[]>(payload, {
 		resolve(payload) {
 			const { schema: Model } = config;
 
-			const resolveError = (errors: ValidationError[]) =>
+			const resolveError = (errors: ValidationError[]): TError =>
 				errors.reduce(
-					(acc: Record<string, string[]>, current: ValidationError) => {
+					(acc: TError, current: ValidationError) => {
 						acc[current.property] = current.constraints
 							? Object.values(current.constraints)
 							: [];
@@ -55,20 +57,20 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 			try {
 				const model = new Model(payload as T);
 
-				const resolveSubmission = (errors: ValidationError[]) => {
+				const resolveSubmission = (errors: ValidationError[]): {value: undefined, error: TError} | {value: T, error: undefined} => {
 					if (errors.length > 0) {
 						return { value: undefined, error: resolveError(errors) };
 					}
 
 					return {
 						value: Object.getOwnPropertyNames(model).reduce(
-							(acc: Record<string, any>, modelPublicKey: string) => {
+							(acc: T, modelPublicKey: string) => {
 								// @ts-ignore
 								acc[modelPublicKey] = model[modelPublicKey];
 
 								return acc;
 							},
-							{},
+							{} as T,
 						),
 						error: undefined,
 					};
