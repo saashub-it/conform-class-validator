@@ -21,18 +21,17 @@ model.
 
 ```ts
 export class ExampleModel {
-    constructor(init: ExampleModel) {
-        this.foo = init.foo;
-        this.bar = init.bar;
-    }
+  constructor(init: ExampleModel) {
+    this.foo = init.foo;
+    this.bar = init.bar;
+  }
 
-    @Length(1, 5)
-    foo: string;
+  @Length(1, 5)
+  foo: string;
 
-    @IsNotEmpty()
-    bar: string;
+  @IsNotEmpty()
+  bar: string;
 }
-
 ```
 
 The only thing you need to make sure of is that the `constructor` accepts your model object and not a list of
@@ -43,8 +42,8 @@ properties:
 ```ts
 constructor(init:ExampleModel)
 {
-    this.foo = init.foo;
-    this.bar = init.bar;
+  this.foo = init.foo;
+  this.bar = init.bar;
 }
 ```
 
@@ -52,8 +51,8 @@ constructor(init:ExampleModel)
 
 ```ts
 constructor(foo:string, bar:string) {
-    this.foo = foo;
-    this.bar = bar;
+  this.foo = foo;
+  this.bar = bar;
 }
 ```
 
@@ -63,38 +62,25 @@ You can use it just like the [Zod](https://conform.guide/api/zod/parseWithZod)
 and [Yup](https://conform.guide/api/yup/parseWithYup) Conform validators:
 
 ```ts
-import {parseWithClassValidator} from '@saashub/conform-class-validator';
+import { parseWithClassValidator } from "@saashub/conform-class-validator";
 
-import {useForm} from '@conform-to/react';
+import { useForm } from "@conform-to/react";
 
 function Example() {
+  const [form, fields] = useForm({
+    onValidate({ formData }) {
+      return parseWithClassValidator(formData, { schema: ExampleModel });
+    },
+  });
 
-    const [form, fields] = useForm({
-
-        onValidate({formData}) {
-
-            return parseWithClassValidator(formData, {schema: ExampleModel});
-
-        },
-
-    });
-
-
-    // ...
-
+  // ...
 }
 ```
 
 #### Parameters
 
-| Property | Required | Definition                                                                                                                      |
-|----------|----------|---------------------------------------------------------------------------------------------------------------------------------|
-| `payload`  | true     | It could be either the FormData or URLSearchParams object depending on how the form is submitted.                               |
-| `schema`   | true     | `class-validator` model                                                                                                         |
-| `async`    | false    | Set it to true if you want to parse the form data with validate method from the `class-validator` schema instead of validateSync. |
-
-
-
-
-
-
+| Property  | Required | Definition                                                                                                                        |
+| --------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `payload` | true     | It could be either the FormData or URLSearchParams object depending on how the form is submitted.                                 |
+| `schema`  | true     | `class-validator` model                                                                                                           |
+| `async`   | false    | Set it to true if you want to parse the form data with validate method from the `class-validator` schema instead of validateSync. |

@@ -1,53 +1,60 @@
 {
-	"name": "@saashub/conform-class-validator",
-	"description": "Conform helpers for integrating with class-validator",
-	"license": "MIT",
-	"version": "0.1.0",
-	"main": "./lib/index.js",
-	"module": "./lib/index.mjs",
-	"types": "./lib/index.d.ts",
-	"exports": {
-		".": {
-			"types": "./lib/index.d.ts",
-			"module": "./lib/index.mjs",
-			"import": "./lib/index.mjs",
-			"require": "./lib/index.js",
-			"default": "./lib/index.mjs"
-		}
-	},
-	"scripts": {
-		"build": "rollup -c --silent",
-		"publish": "npm run build && npm publish --access public",
-		"test": "vitest run"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/saashub-it/conform-class-validator"
-	},
-	"bugs": {
-		"url": "https://github.com/saashub-it/conform-class-validator/issues"
-	},
-	"dependencies": {
-		"@conform-to/dom": "1.1.5"
-	},
-	"peerDependencies": {
-		"class-validator": "^0.14.1"
-	},
-	"devDependencies": {
-		"@rollup/plugin-typescript": "11.1.6",
-		"@types/node": "^20",
-		"class-validator": "0.14.1",
-		"rollup": "4.20.0",
-		"tslib": "2.6.3",
-		"typescript": "5.5.4",
-		"vitest": "2.0.5"
-	},
-	"keywords": [
-		"constraint-validation",
-		"form-validation",
-		"validation",
-		"class-validator",
-		"conform+class-validator"
-	],
-	"sideEffects": false
+  "name": "@saashub/conform-class-validator",
+  "description": "Conform helpers for integrating with class-validator",
+  "license": "MIT",
+  "version": "0.1.0",
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "module": "./lib/index.mjs",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js",
+      "default": "./lib/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c --silent",
+    "publish": "npm run build",
+    "test": "vitest run",
+    "qoq:check": "qoq",
+    "qoq:fix": "qoq --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://github.com/saashub-it/conform-class-validator"
+  },
+  "bugs": {
+    "url": "https://github.com/saashub-it/conform-class-validator/issues"
+  },
+  "dependencies": {
+    "@conform-to/dom": "1.1.5"
+  },
+  "peerDependencies": {
+    "class-validator": "^0.14.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "11.1.6",
+    "@saashub/qoq-cli": "latest",
+    "@saashub/qoq-prettier": "latest",
+    "@types/node": "^20",
+    "class-validator": "0.14.1",
+    "rollup": "4.20.0",
+    "tslib": "2.6.3",
+    "typescript": "5.5.4",
+    "vitest": "2.0.5"
+  },
+  "keywords": [
+    "constraint-validation",
+    "form-validation",
+    "validation",
+    "class-validator",
+    "conform+class-validator"
+  ],
+  "sideEffects": false
 }

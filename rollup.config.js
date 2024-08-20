@@ -1,7 +1,7 @@
-const typescript = require('@rollup/plugin-typescript');
+const typescript = require("@rollup/plugin-typescript");
 
-const outputDir = './lib';
-const input = `./index.ts`;
+const outputDir = "./lib";
+const input = "./src/index.ts";
 const plugins = [typescript()];
 
 module.exports = {
@@ -10,13 +10,13 @@ module.exports = {
   output: [
     {
       dir: outputDir,
-      format: 'esm',
-      entryFileNames: '[name].mjs',
+      format: "esm",
+      entryFileNames: "[name].mjs",
     },
     {
       dir: outputDir,
-      format: 'cjs',
-      exports: 'auto',
+      format: "cjs",
+      exports: "auto",
     },
   ],
 };
