@@ -29,9 +29,7 @@ jobs:
       - name: Archive code coverage results
         uses: codecov/codecov-action@v4
         with:
-          file: coverage/coverage-summary.json
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
   build:
     runs-on: ubuntu-latest
     steps:
