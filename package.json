@@ -54,7 +54,7 @@
     "form-validation",
     "validation",
     "class-validator",
-    "conform+class-validator"
+    "conform"
   ],
   "sideEffects": false
 }
