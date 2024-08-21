@@ -6,13 +6,33 @@ on: [push]
 #       - 'master'
 
 jobs:
-  tests:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js
+      - name: QoQ
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
       - run: npm ci
-      - run: npm test
+      - run: npm run qoq:check
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - run: npm ci
+      - run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - run: npm ci
+      - run: npm run build
