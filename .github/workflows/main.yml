@@ -28,8 +28,8 @@ jobs:
       - run: npm run test
       - name: Archive code coverage results
         uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   build:
     runs-on: ubuntu-latest
     steps:
