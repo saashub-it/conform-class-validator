@@ -3,6 +3,7 @@
   "description": "Conform helpers for integrating with class-validator",
   "license": "MIT",
   "version": "0.1.1",
+  "type": "module",
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
@@ -21,7 +22,7 @@
   "scripts": {
     "build": "rollup -c --silent",
     "publish": "npm run build",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "qoq:check": "qoq",
     "qoq:fix": "qoq --fix"
   },
@@ -43,6 +44,7 @@
     "@saashub/qoq-cli": "latest",
     "@saashub/qoq-prettier": "latest",
     "@types/node": "^20",
+    "@vitest/coverage-istanbul": "^2.0.5",
     "class-validator": "0.14.1",
     "rollup": "4.20.0",
     "tslib": "2.6.3",

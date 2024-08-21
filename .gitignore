@@ -9,6 +9,7 @@
 
 # builds
 **/lib
+**/coverage
 
 # Logs
 logs
