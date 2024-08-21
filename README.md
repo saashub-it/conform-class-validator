@@ -1,5 +1,9 @@
 # @saashub/conform-class-validator
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/saashub-it/conform-class-validator/main.yml) [![codecov](https://codecov.io/gh/saashub-it/conform-class-validator/graph/badge.svg?token=DQ52A2QT51)](https://codecov.io/gh/saashub-it/conform-class-validator)
+ ![NPM Version](https://img.shields.io/npm/v/%40saashub%2Fconform-class-validator)
+![NPM Type Definitions](https://img.shields.io/npm/types/%40saashub%2Fconform-class-validator) ![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/%40saashub%2Fconform-class-validator) ![NPM License](https://img.shields.io/npm/l/%40saashub%2Fconform-class-validator)
+
 ## Rationale
 
 Add on to [Conform](https://github.com/edmundhung/conform) that adds

@@ -1,10 +1,10 @@
-const typescript = require("@rollup/plugin-typescript");
+import typescript from "@rollup/plugin-typescript";
 
 const outputDir = "./lib";
 const input = "./src/index.ts";
 const plugins = [typescript()];
 
-module.exports = {
+export default {
   input,
   plugins,
   output: [
