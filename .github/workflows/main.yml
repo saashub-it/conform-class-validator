@@ -27,10 +27,11 @@ jobs:
       - run: npm ci
       - run: npm run test
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v4
+        uses: codecov/codecov-action@v4
         with:
-          name: code-coverage-report
-          path: coverage/coverage-summary.json
+          file: coverage/coverage-summary.json
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   build:
     runs-on: ubuntu-latest
     steps:
