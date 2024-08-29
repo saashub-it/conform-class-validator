@@ -1,8 +1,8 @@
-import typescript from '@rollup/plugin-typescript'
+import typescript from '@rollup/plugin-typescript';
 
-const outputDir = './lib'
-const input = './src/index.ts'
-const plugins = [typescript()]
+const outputDir = './lib';
+const input = './src/index.ts';
+const plugins = [typescript()];
 
 export default {
   input,
@@ -19,4 +19,4 @@ export default {
       exports: 'auto',
     },
   ],
-}
+};

@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest'
-import { parseWithClassValidator } from './index'
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { parseWithClassValidator } from './index';
 import {
   Equals,
   IsDefined,
@@ -13,23 +13,23 @@ import {
   Min,
   MinLength,
   NotEquals,
-} from 'class-validator'
+} from 'class-validator';
 
 const createFormData = (
   entries: Array<[string, FormDataEntryValue]>
 ): FormData => {
-  const formData = new FormData()
+  const formData = new FormData();
 
   for (const [name, value] of entries) {
-    formData.append(name, value)
+    formData.append(name, value);
   }
 
-  return formData
-}
+  return formData;
+};
 
 beforeEach(() => {
-  vi.unstubAllGlobals()
-})
+  vi.unstubAllGlobals();
+});
 
 const enum TestEnum {
   VALUE = 'VALUE',
@@ -37,18 +37,18 @@ const enum TestEnum {
 }
 
 interface IBasicPayload {
-  name: string
-  qty: string
+  name: string;
+  qty: string;
 }
 
 interface ITypePayload {
-  name: string
-  qty: number
-  date: Date
-  fraction: number
-  tags: Array<string>
-  bool: Boolean
-  enum: TestEnum
+  name: string;
+  qty: number;
+  date: Date;
+  fraction: number;
+  tags: Array<string>;
+  bool: Boolean;
+  enum: TestEnum;
 }
 
 describe('conform-class-validator', () => {
@@ -56,16 +56,16 @@ describe('conform-class-validator', () => {
     describe('Basic functionality', () => {
       class TestModel {
         constructor(data: IBasicPayload) {
-          this.name = data.name
-          this.qty = Number(data.qty)
+          this.name = data.name;
+          this.qty = Number(data.qty);
         }
 
         @IsNotEmpty({ message: 'IsNotEmpty' })
         @MinLength(3, { message: 'MinLength' })
-        name: string
+        name: string;
 
         @Min(1, { message: 'Min' })
-        qty: number
+        qty: number;
       }
 
       test('no data', () => {
@@ -84,8 +84,8 @@ describe('conform-class-validator', () => {
           payload: { name: '', qty: '' },
           error: { name: ['MinLength', 'IsNotEmpty'], qty: ['Min'] },
           reply: expect.any(Function),
-        })
-      })
+        });
+      });
 
       test('no name', () => {
         expect(
@@ -97,8 +97,8 @@ describe('conform-class-validator', () => {
           payload: { qty: '5' },
           error: { name: ['MinLength', 'IsNotEmpty'] },
           reply: expect.any(Function),
-        })
-      })
+        });
+      });
 
       test('no qty', () => {
         expect(
@@ -110,8 +110,8 @@ describe('conform-class-validator', () => {
           payload: { name: 'John' },
           error: { qty: ['Min'] },
           reply: expect.any(Function),
-        })
-      })
+        });
+      });
 
       test('all good', () => {
         expect(
@@ -129,18 +129,18 @@ describe('conform-class-validator', () => {
           payload: { name: 'John', qty: '5' },
           value: { name: 'John', qty: 5 },
           reply: expect.any(Function),
-        })
-      })
-    })
+        });
+      });
+    });
     describe('Data type checks', () => {
       describe('@IsDefined', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.name = data.name
+            this.name = data.name;
           }
 
           @IsDefined()
-          name: string
+          name: string;
         }
 
         test('it does not show errors if value is defined', () => {
@@ -153,8 +153,8 @@ describe('conform-class-validator', () => {
             payload: { name: 'John' },
             value: { name: 'John' },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it does not show errors if value is empty', () => {
           expect(
@@ -166,8 +166,8 @@ describe('conform-class-validator', () => {
             payload: { name: '' },
             value: { name: '' },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it shows errors if value is undefined', () => {
           expect(
@@ -181,17 +181,17 @@ describe('conform-class-validator', () => {
             },
             payload: { undefined: 'undefined' },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@Equals', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.name = data.name
+            this.name = data.name;
           }
 
           @Equals('test')
-          name: string
+          name: string;
         }
 
         test('it does not show errors if value matches the expected', () => {
@@ -204,8 +204,8 @@ describe('conform-class-validator', () => {
             payload: { name: 'test' },
             value: { name: 'test' },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
         test('it shows an error on a different value', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'invalid']]), {
@@ -218,8 +218,8 @@ describe('conform-class-validator', () => {
               name: ['name must be equal to test'],
             },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
         test('it shows an error on a undefined field', () => {
           expect(
             parseWithClassValidator(createFormData([[]]), {
@@ -232,17 +232,17 @@ describe('conform-class-validator', () => {
               name: ['name must be equal to test'],
             },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@NotEquals', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.name = data.name
+            this.name = data.name;
           }
 
           @NotEquals('test')
-          name: string
+          name: string;
         }
 
         test('it does not show errors if value is not forbidden', () => {
@@ -255,8 +255,8 @@ describe('conform-class-validator', () => {
             payload: { name: 'notTest' },
             value: { name: 'notTest' },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
         test('it shows an error on forbidden value', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
@@ -269,8 +269,8 @@ describe('conform-class-validator', () => {
               name: ['name should not be equal to test'],
             },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
         test('it does not show an error on a undefined field', () => {
           expect(
             parseWithClassValidator(createFormData([[]]), {
@@ -281,17 +281,17 @@ describe('conform-class-validator', () => {
             payload: { undefined: 'undefined' },
             value: { name: undefined },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@IsEmpty', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.name = data.name
+            this.name = data.name;
           }
 
           @IsEmpty()
-          name: string
+          name: string;
         }
 
         test('it does not show errors if value is empty', () => {
@@ -304,11 +304,11 @@ describe('conform-class-validator', () => {
             payload: { undefined: 'undefined' },
             value: { name: undefined },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it shows errors on any value', () => {
-          expect(isEmpty(null)).toEqual(true)
+          expect(isEmpty(null)).toEqual(true);
 
           expect(
             parseWithClassValidator(createFormData([['name', 'value']]), {
@@ -319,17 +319,17 @@ describe('conform-class-validator', () => {
             payload: { name: 'value' },
             error: { name: ['name must be empty'] },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@IsNotEmpty', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.name = data.name
+            this.name = data.name;
           }
 
           @IsNotEmpty()
-          name: string
+          name: string;
         }
 
         test('it does not show errors if value is not empty', () => {
@@ -342,11 +342,11 @@ describe('conform-class-validator', () => {
             payload: { name: 'value' },
             value: { name: 'value' },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it shows errors on empty value', () => {
-          expect(isEmpty(null)).toEqual(true)
+          expect(isEmpty(null)).toEqual(true);
 
           expect(
             parseWithClassValidator(createFormData([['name', '']]), {
@@ -357,11 +357,11 @@ describe('conform-class-validator', () => {
             payload: { name: '' },
             error: { name: ['name should not be empty'] },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it shows errors on no value', () => {
-          expect(isEmpty(null)).toEqual(true)
+          expect(isEmpty(null)).toEqual(true);
 
           expect(
             parseWithClassValidator(createFormData([[]]), {
@@ -372,19 +372,19 @@ describe('conform-class-validator', () => {
             payload: { undefined: 'undefined' },
             error: { name: ['name should not be empty'] },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@IsIn', () => {
-        const valueArray = ['test', 'value']
+        const valueArray = ['test', 'value'];
 
         class TestModel {
           constructor(data: ITypePayload) {
-            this.name = data.name
+            this.name = data.name;
           }
 
           @IsIn(valueArray)
-          name: string
+          name: string;
         }
 
         test('it does not show errors if value is in array', () => {
@@ -397,8 +397,8 @@ describe('conform-class-validator', () => {
             payload: { name: valueArray[0] },
             value: { name: valueArray[0] },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it shows an error presented an value outside of array', () => {
           expect(
@@ -412,19 +412,19 @@ describe('conform-class-validator', () => {
               name: ['name must be one of the following values: test, value'],
             },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@IsNotIn', () => {
-        const valueArray = ['test', 'value']
+        const valueArray = ['test', 'value'];
 
         class TestModel {
           constructor(data: ITypePayload) {
-            this.name = data.name
+            this.name = data.name;
           }
 
           @IsNotIn(valueArray)
-          name: string
+          name: string;
         }
 
         test('it does not show errors if value is outside of array', () => {
@@ -441,8 +441,8 @@ describe('conform-class-validator', () => {
               ],
             },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it doet not show an error presented an value outside of array', () => {
           expect(
@@ -454,17 +454,17 @@ describe('conform-class-validator', () => {
             payload: { name: 'notInArray' },
             value: { name: 'notInArray' },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@IsEnum', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.enum = data.enum
+            this.enum = data.enum;
           }
 
           @IsEnum(TestEnum)
-          enum: TestEnum
+          enum: TestEnum;
         }
 
         test('it shows an error if value does not fulfill the enum', () => {
@@ -481,8 +481,8 @@ describe('conform-class-validator', () => {
               ],
             },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it does not show an error if the value fulfills the enum', () => {
           expect(
@@ -495,17 +495,17 @@ describe('conform-class-validator', () => {
             payload: { enum: TestEnum.VALUE },
             value: { enum: TestEnum.VALUE },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@Min', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.qty = Number(data.qty)
+            this.qty = Number(data.qty);
           }
 
           @Min(4)
-          qty: number
+          qty: number;
         }
 
         test('it shows an error if value is lower then minimum', () => {
@@ -518,8 +518,8 @@ describe('conform-class-validator', () => {
             payload: { qty: '1' },
             error: { qty: ['qty must not be less than 4'] },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it does not show an error if the value is larger than minimum', () => {
           expect(
@@ -531,17 +531,17 @@ describe('conform-class-validator', () => {
             payload: { qty: '10' },
             value: { qty: 10 },
             reply: expect.any(Function),
-          })
-        })
-      })
+          });
+        });
+      });
       describe('@Max', () => {
         class TestModel {
           constructor(data: ITypePayload) {
-            this.qty = Number(data.qty)
+            this.qty = Number(data.qty);
           }
 
           @Max(4)
-          qty: number
+          qty: number;
         }
 
         test('it shows an error if value is higher than maximum', () => {
@@ -554,8 +554,8 @@ describe('conform-class-validator', () => {
             payload: { qty: '5' },
             error: { qty: ['qty must not be greater than 4'] },
             reply: expect.any(Function),
-          })
-        })
+          });
+        });
 
         test('it does not show an error if the value is smaller than maximum', () => {
           expect(
@@ -567,9 +567,9 @@ describe('conform-class-validator', () => {
             payload: { qty: '2' },
             value: { qty: 2 },
             reply: expect.any(Function),
-          })
-        })
-      })
-    })
-  })
-})
+          });
+        });
+      });
+    });
+  });
+});
