@@ -1,8 +1,8 @@
-import typescript from "@rollup/plugin-typescript";
+import typescript from '@rollup/plugin-typescript'
 
-const outputDir = "./lib";
-const input = "./src/index.ts";
-const plugins = [typescript()];
+const outputDir = './lib'
+const input = './src/index.ts'
+const plugins = [typescript()]
 
 export default {
   input,
@@ -10,13 +10,13 @@ export default {
   output: [
     {
       dir: outputDir,
-      format: "esm",
-      entryFileNames: "[name].mjs",
+      format: 'esm',
+      entryFileNames: '[name].mjs',
     },
     {
       dir: outputDir,
-      format: "cjs",
-      exports: "auto",
+      format: 'cjs',
+      exports: 'auto',
     },
   ],
-};
+}
