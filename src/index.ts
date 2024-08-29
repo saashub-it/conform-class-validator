@@ -18,7 +18,7 @@ export function parseWithClassValidator<T extends Record<string, any>>(
   config: {
     schema: TConformClassValidatorModelConstructor<T>;
     async?: false;
-  }
+  },
 ): Submission<T, string[]>;
 
 export function parseWithClassValidator<T extends Record<string, any>>(
@@ -26,7 +26,7 @@ export function parseWithClassValidator<T extends Record<string, any>>(
   config: {
     schema: TConformClassValidatorModelConstructor<T>;
     async: true;
-  }
+  },
 ): Promise<Submission<T, string[]>>;
 
 export function parseWithClassValidator<T extends Record<string, any>>(
@@ -34,7 +34,7 @@ export function parseWithClassValidator<T extends Record<string, any>>(
   config: {
     schema: TConformClassValidatorModelConstructor<T>;
     async?: boolean;
-  }
+  },
 ): Submission<T, string[]> | Promise<Submission<T, string[]>> {
   return parse<T, string[]>(payload, {
     resolve(payload) {
@@ -52,7 +52,7 @@ export function parseWithClassValidator<T extends Record<string, any>>(
       try {
         const model = new Model(payload as T);
         const resolveSubmission = (
-          errors: ValidationError[]
+          errors: ValidationError[],
         ):
           | { value: undefined; error: TError }
           | { value: T; error: undefined } => {
@@ -68,7 +68,7 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 
                 return acc;
               },
-              {} as T
+              {} as T,
             ),
             error: undefined,
           };
