@@ -1,6 +1,8 @@
 import { parse, type Submission } from '@conform-to/dom';
 import { validate, validateSync, type ValidationError } from 'class-validator';
 
+export class ModelCreationError extends Error {}
+
 class ConformClassValidatorModel<T extends Record<string, any>> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(data: T) {
@@ -79,7 +81,12 @@ export function parseWithClassValidator<T extends Record<string, any>>(
         }
 
         return validate(model).then(resolveSubmission);
-      } catch {
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new ModelCreationError(
+            `Failed to contruct Model for validation`,
+          );
+        }
         throw new Error('Bad validation model passed!');
       }
     },
