@@ -1,9 +1,14 @@
-# ignore all .ts, .tsx files except .d.ts
-*.ts
-*.tsx
-!*.d.ts
+# builds
+!lib
 
-# config / build result
+# tests
+coverage
+
+# sources
+src
+
+# configs
+qoq.config.js
 rollup.config.js
 tsconfig.json
-*.tsbuildinfo
+vitest.config.js
