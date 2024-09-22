@@ -20,10 +20,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rollup -c --silent",
+    "build": "rimraf ./lib && rollup -c --silent",
     "publish": "npm run build",
     "test": "vitest run --coverage",
-    "qoq:check": "qoq",
+    "qoq:check": "qoq --check",
     "qoq:fix": "qoq --fix"
   },
   "repository": {
@@ -34,22 +34,27 @@
     "url": "https://github.com/saashub-it/conform-class-validator/issues"
   },
   "dependencies": {
-    "@conform-to/dom": "1.1.5"
+    "@conform-to/dom": "1.2.2"
   },
   "peerDependencies": {
     "class-validator": "^0.14.1"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "11.1.6",
-    "@saashub/qoq-cli": "latest",
-    "@saashub/qoq-prettier": "latest",
+    "@saashub/qoq-cli": "^0.10.0",
+    "@saashub/qoq-eslint-v9-ts": "^0.10.0",
+    "@saashub/qoq-eslint-v9-ts-vitest": "^0.10.0",
+    "@saashub/qoq-jscpd": "^0.10.0",
+    "@saashub/qoq-knip": "^0.10.0",
+    "@saashub/qoq-prettier": "^0.10.0",
     "@types/node": "^20",
-    "@vitest/coverage-v8": "^2.0.5",
+    "@vitest/coverage-v8": "2.1.1",
     "class-validator": "0.14.1",
+    "rimraf": "6.0.1",
     "rollup": "4.20.0",
-    "tslib": "2.6.3",
+    "tslib": "2.7.0",
     "typescript": "5.5.4",
-    "vitest": "2.0.5"
+    "vitest": "2.1.1"
   },
   "keywords": [
     "constraint-validation",

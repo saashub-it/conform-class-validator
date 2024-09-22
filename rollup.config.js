@@ -1,7 +1,10 @@
 import typescript from "@rollup/plugin-typescript";
 
+const sourceDir = './src';
 const outputDir = "./lib";
-const input = "./src/index.ts";
+const input = {
+  index: `${sourceDir}/index.ts`,
+};
 const plugins = [typescript()];
 
 export default {

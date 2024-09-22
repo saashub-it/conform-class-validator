@@ -1,10 +1,9 @@
-import { beforeEach, vi, describe, test, expect } from "vitest";
-import { parseWithClassValidator } from "./index";
-import { IsNotEmpty, Min, MinLength } from "class-validator";
+import { IsNotEmpty, Min, MinLength } from 'class-validator';
+import { beforeEach, vi, describe, test, expect } from 'vitest';
 
-const createFormData = (
-  entries: Array<[string, FormDataEntryValue]>,
-): FormData => {
+import { parseWithClassValidator } from './index';
+
+const createFormData = (entries: Array<[string, FormDataEntryValue]>): FormData => {
   const formData = new FormData();
 
   for (const [name, value] of entries) {
@@ -29,76 +28,76 @@ class TestModel {
     this.qty = Number(data.qty);
   }
 
-  @IsNotEmpty({ message: "IsNotEmpty" })
-  @MinLength(3, { message: "MinLength" })
+  @IsNotEmpty({ message: 'IsNotEmpty' })
+  @MinLength(3, { message: 'MinLength' })
   name: string;
 
-  @Min(1, { message: "Min" })
+  @Min(1, { message: 'Min' })
   qty: number;
 }
 
-describe("conform-class-validator", () => {
-  describe("parseWithClassValidator", () => {
-    test("no data", () => {
+describe('conform-class-validator', () => {
+  describe('parseWithClassValidator', () => {
+    test('no data', () => {
       expect(
         parseWithClassValidator(
           createFormData([
-            ["name", ""],
-            ["qty", ""],
+            ['name', ''],
+            ['qty', ''],
           ]),
           {
             schema: TestModel,
-          },
-        ),
+          }
+        )
       ).toEqual({
-        status: "error",
-        payload: { name: "", qty: "" },
-        error: { name: ["MinLength", "IsNotEmpty"], qty: ["Min"] },
+        status: 'error',
+        payload: { name: '', qty: '' },
+        error: { name: ['MinLength', 'IsNotEmpty'], qty: ['Min'] },
         reply: expect.any(Function),
       });
     });
 
-    test("no name", () => {
+    test('no name', () => {
       expect(
-        parseWithClassValidator(createFormData([["qty", "5"]]), {
+        parseWithClassValidator(createFormData([['qty', '5']]), {
           schema: TestModel,
-        }),
+        })
       ).toEqual({
-        status: "error",
-        payload: { qty: "5" },
-        error: { name: ["MinLength", "IsNotEmpty"] },
+        status: 'error',
+        payload: { qty: '5' },
+        error: { name: ['MinLength', 'IsNotEmpty'] },
         reply: expect.any(Function),
       });
     });
 
-    test("no qty", () => {
+    test('no qty', () => {
       expect(
-        parseWithClassValidator(createFormData([["name", "John"]]), {
+        parseWithClassValidator(createFormData([['name', 'John']]), {
           schema: TestModel,
-        }),
+        })
       ).toEqual({
-        status: "error",
-        payload: { name: "John" },
-        error: { qty: ["Min"] },
+        status: 'error',
+        payload: { name: 'John' },
+        error: { qty: ['Min'] },
         reply: expect.any(Function),
       });
     });
 
-    test("all good", () => {
+    test('all good', () => {
       expect(
         parseWithClassValidator(
           createFormData([
-            ["name", "John"],
-            ["qty", "5"],
+            ['name', 'John'],
+            ['qty', '5'],
           ]),
           {
             schema: TestModel,
-          },
-        ),
+          }
+        )
       ).toEqual({
-        status: "success",
-        payload: { name: "John", qty: "5" },
-        value: { name: "John", qty: 5 },
+        status: 'success',
+        payload: { name: 'John', qty: '5' },
+        value: { name: 'John', qty: 5 },
         reply: expect.any(Function),
       });
     });
