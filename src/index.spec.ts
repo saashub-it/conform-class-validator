@@ -1,8 +1,4 @@
-/* eslint-disable max-lines-per-function */
-/* eslint-disable max-lines */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable sonarjs/no-hardcoded-ip */
+/* eslint-disable max-lines-per-function, max-lines, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, sonarjs/no-hardcoded-ip */
 
 import {
   ArrayContains,
@@ -226,6 +222,28 @@ describe('conform-class-validator', () => {
         });
       });
 
+      test('all good async', async () => {
+        const promiseParseWithClassValidator = parseWithClassValidator(
+          createFormData([
+            ['name', 'John'],
+            ['qty', '5'],
+          ]),
+          {
+            schema: TestModel,
+            async: true,
+          }
+        );
+
+        expect(promiseParseWithClassValidator).toBeInstanceOf(Promise);
+
+        expect(await promiseParseWithClassValidator).toEqual({
+          status: 'success',
+          payload: { name: 'John', qty: '5' },
+          value: { name: 'John', qty: 5 },
+          reply: expect.any(Function),
+        });
+      });
+
       test('it throws a ModelCreationError on failed construction', () => {
         try {
           parseWithClassValidator(createFormData([['casting', 'test']]), {
@@ -236,6 +254,7 @@ describe('conform-class-validator', () => {
         }
       });
     });
+
     describe('Data type checks', () => {
       describe('@IsDefined', () => {
         class TestModel {
@@ -784,7 +803,9 @@ describe('conform-class-validator', () => {
             this.date = new Date(data.date);
           }
 
-          @MinDate(new Date(testDateString))
+          @MinDate(new Date(testDateString), {
+            message: `minimal allowed date for date is ${testDateString}`,
+          })
           date: Date;
         }
 
@@ -800,9 +821,7 @@ describe('conform-class-validator', () => {
             status: 'error',
             payload: { date: 'Sun Sep 14 2024 00:06:25 GMT+0200' },
             error: {
-              date: [
-                'minimal allowed date for date is Sun Sep 15 2024 00:06:25 GMT+0200 (czas środkowoeuropejski letni)',
-              ],
+              date: ['minimal allowed date for date is Sun Sep 15 2024 00:06:25 GMT+0200'],
             },
             reply: expect.any(Function),
           });
@@ -832,7 +851,9 @@ describe('conform-class-validator', () => {
             this.date = new Date(data.date);
           }
 
-          @MaxDate(new Date(testDateString))
+          @MaxDate(new Date(testDateString), {
+            message: `maximal allowed date for date is ${testDateString}`,
+          })
           date: Date;
         }
 
@@ -848,9 +869,7 @@ describe('conform-class-validator', () => {
             status: 'error',
             payload: { date: 'Sun Sep 24 2024 00:06:25 GMT+0200' },
             error: {
-              date: [
-                'maximal allowed date for date is Sun Sep 15 2024 00:06:25 GMT+0200 (czas środkowoeuropejski letni)',
-              ],
+              date: ['maximal allowed date for date is Sun Sep 15 2024 00:06:25 GMT+0200'],
             },
             reply: expect.any(Function),
           });
