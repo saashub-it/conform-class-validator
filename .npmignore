@@ -7,7 +7,14 @@ coverage
 # sources
 src
 
+# IDE
+.idea
+
+# CI
+.github
+
 # configs
+.prettierrc
 qoq.config.js
 rollup.config.js
 tsconfig.json
