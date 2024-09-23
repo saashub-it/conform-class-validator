@@ -1,5 +1,7 @@
-import { type Submission, parse } from '@conform-to/dom';
-import { type ValidationError, validate, validateSync } from 'class-validator';
+import { parse, type Submission } from '@conform-to/dom';
+import { validate, validateSync, type ValidationError } from 'class-validator';
+
+export class ModelCreationError extends Error {}
 
 class ConformClassValidatorModel<T extends Record<string, any>> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, sonarjs/no-useless-constructor
@@ -51,7 +53,6 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 
       try {
         const model = new Model(payload as T);
-
         const resolveSubmission = (
           errors: ValidationError[]
         ): { value: undefined; error: TError } | { value: T; error: undefined } => {
@@ -75,7 +76,10 @@ export function parseWithClassValidator<T extends Record<string, any>>(
         }
 
         return validate(model).then(resolveSubmission);
-      } catch {
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new ModelCreationError(`Failed to contruct Model for validation`);
+        }
         throw new Error('Bad validation model passed!');
       }
     },
