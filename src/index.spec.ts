@@ -1,3 +1,9 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable sonarjs/no-hardcoded-ip */
+
 import {
   ArrayContains,
   ArrayMaxSize,
@@ -96,11 +102,10 @@ import {
   NotEquals,
 } from 'class-validator';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { ModelCreationError, parseWithClassValidator } from './index';
 
-const createFormData = (
-  entries: Array<[string, FormDataEntryValue]>,
-): FormData => {
+const createFormData = (entries: Array<[string, FormDataEntryValue]>): FormData => {
   const formData = new FormData();
 
   for (const [name, value] of entries) {
@@ -114,7 +119,7 @@ beforeEach(() => {
   vi.unstubAllGlobals();
 });
 
-const enum TestEnum {
+const enum ETestEnum {
   VALUE = 'VALUE',
   NO_VALUE = 'NO_VALUE',
 }
@@ -131,8 +136,8 @@ interface ITypePayload {
   date: Date;
   fraction: number;
   tags: Array<string>;
-  bool: Boolean;
-  enum: TestEnum;
+  bool: boolean;
+  enum: ETestEnum;
   obj: string;
 }
 
@@ -143,6 +148,7 @@ describe('conform-class-validator', () => {
         constructor(data: IBasicPayload) {
           this.name = data.name;
           this.qty = Number(data.qty);
+
           this.casting = data.casting ? data.casting.test.notHere : undefined;
         }
 
@@ -165,8 +171,8 @@ describe('conform-class-validator', () => {
             ]),
             {
               schema: TestModel,
-            },
-          ),
+            }
+          )
         ).toEqual({
           status: 'error',
           payload: { name: '', qty: '' },
@@ -179,7 +185,7 @@ describe('conform-class-validator', () => {
         expect(
           parseWithClassValidator(createFormData([['qty', '5']]), {
             schema: TestModel,
-          }),
+          })
         ).toEqual({
           status: 'error',
           payload: { qty: '5' },
@@ -192,7 +198,7 @@ describe('conform-class-validator', () => {
         expect(
           parseWithClassValidator(createFormData([['name', 'John']]), {
             schema: TestModel,
-          }),
+          })
         ).toEqual({
           status: 'error',
           payload: { name: 'John' },
@@ -210,8 +216,8 @@ describe('conform-class-validator', () => {
             ]),
             {
               schema: TestModel,
-            },
-          ),
+            }
+          )
         ).toEqual({
           status: 'success',
           payload: { name: 'John', qty: '5' },
@@ -245,7 +251,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'John']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'John' },
@@ -258,7 +264,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: '' },
@@ -269,10 +275,10 @@ describe('conform-class-validator', () => {
 
         test('it shows errors if value is undefined', () => {
           expect(
-            // @ts-expect-error
+            // @ts-expect-error We are testing an invalid input
             parseWithClassValidator(createFormData([[]]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             error: {
@@ -297,7 +303,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'test' },
@@ -309,7 +315,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'invalid']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'invalid' },
@@ -321,10 +327,10 @@ describe('conform-class-validator', () => {
         });
         test('it shows an error on a undefined field', () => {
           expect(
-            // @ts-expect-error
+            // @ts-expect-error We are testing an invalid input
             parseWithClassValidator(createFormData([[]]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { undefined: 'undefined' },
@@ -349,7 +355,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'notTest']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'notTest' },
@@ -361,7 +367,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -373,10 +379,10 @@ describe('conform-class-validator', () => {
         });
         test('it does not show an error on a undefined field', () => {
           expect(
-            // @ts-expect-error
+            // @ts-expect-error We are testing an invalid input
             parseWithClassValidator(createFormData([[]]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { undefined: 'undefined' },
@@ -397,10 +403,10 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is empty', () => {
           expect(
-            // @ts-expect-error
+            // @ts-expect-error We are testing an invalid input
             parseWithClassValidator(createFormData([[]]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { undefined: 'undefined' },
@@ -413,7 +419,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'value']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'value' },
@@ -436,7 +442,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'value']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'value' },
@@ -449,7 +455,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '' },
@@ -460,10 +466,10 @@ describe('conform-class-validator', () => {
 
         test('it shows errors on no value', () => {
           expect(
-            // @ts-expect-error
+            // @ts-expect-error We are testing an invalid input
             parseWithClassValidator(createFormData([[]]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { undefined: 'undefined' },
@@ -488,7 +494,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', valueArray[0]]]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: valueArray[0] },
@@ -501,7 +507,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'notInArray']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'notInArray' },
@@ -528,14 +534,12 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', valueArray[0]]]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: valueArray[0] },
             error: {
-              name: [
-                'name should not be one of the following values: test, value',
-              ],
+              name: ['name should not be one of the following values: test, value'],
             },
             reply: expect.any(Function),
           });
@@ -545,7 +549,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'notInArray']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'notInArray' },
@@ -559,23 +563,21 @@ describe('conform-class-validator', () => {
           constructor(data: ITypePayload) {
             this.enum = data.enum;
           }
-          // @ts-expect-error
-          @IsEnum(TestEnum)
-          enum: TestEnum;
+          // @ts-expect-error We are testing an invalid input
+          @IsEnum(ETestEnum)
+          enum: ETestEnum;
         }
 
         test('it shows an error if value does not fulfill the enum', () => {
           expect(
             parseWithClassValidator(createFormData([['enum', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { enum: 'test' },
             error: {
-              enum: [
-                'enum must be one of the following values: VALUE, NO_VALUE',
-              ],
+              enum: ['enum must be one of the following values: VALUE, NO_VALUE'],
             },
             reply: expect.any(Function),
           });
@@ -583,14 +585,13 @@ describe('conform-class-validator', () => {
 
         test('it does not show an error if the value fulfills the enum', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['enum', TestEnum.VALUE]]),
-              { schema: TestModel },
-            ),
+            parseWithClassValidator(createFormData([['enum', ETestEnum.VALUE]]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
-            payload: { enum: TestEnum.VALUE },
-            value: { enum: TestEnum.VALUE },
+            payload: { enum: ETestEnum.VALUE },
+            value: { enum: ETestEnum.VALUE },
             reply: expect.any(Function),
           });
         });
@@ -609,7 +610,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '1']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { qty: '1' },
@@ -622,7 +623,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '10']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { qty: '10' },
@@ -645,7 +646,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '5']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { qty: '5' },
@@ -658,7 +659,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '2']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { qty: '2' },
@@ -681,7 +682,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '5']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { qty: '5' },
@@ -694,7 +695,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '2']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { qty: '2' },
@@ -717,7 +718,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '-5']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { qty: '-5' },
@@ -730,7 +731,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '2']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { qty: '2' },
@@ -753,7 +754,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '5']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { qty: '5' },
@@ -766,7 +767,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['qty', '-2']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { qty: '-2' },
@@ -793,8 +794,8 @@ describe('conform-class-validator', () => {
               createFormData([['date', 'Sun Sep 14 2024 00:06:25 GMT+0200']]),
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'error',
             payload: { date: 'Sun Sep 14 2024 00:06:25 GMT+0200' },
@@ -813,8 +814,8 @@ describe('conform-class-validator', () => {
               createFormData([['date', 'Sun Sep 16 2024 00:06:25 GMT+0200']]),
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: { date: 'Sun Sep 16 2024 00:06:25 GMT+0200' },
@@ -841,8 +842,8 @@ describe('conform-class-validator', () => {
               createFormData([['date', 'Sun Sep 24 2024 00:06:25 GMT+0200']]),
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'error',
             payload: { date: 'Sun Sep 24 2024 00:06:25 GMT+0200' },
@@ -861,8 +862,8 @@ describe('conform-class-validator', () => {
               createFormData([['date', 'Sun Sep 12 2024 00:06:25 GMT+0200']]),
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: { date: 'Sun Sep 12 2024 00:06:25 GMT+0200' },
@@ -885,7 +886,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'false']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'false' },
@@ -898,7 +899,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'value']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'value' },
@@ -919,12 +920,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a date string', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '2016-09-18T17:34:02.666Z']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '2016-09-18T17:34:02.666Z']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: '2016-09-18T17:34:02.666Z' },
@@ -937,7 +935,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'value']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'value' },
@@ -960,7 +958,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '45']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: '45' },
@@ -973,7 +971,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'value']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'value' },
@@ -994,12 +992,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value contains the seed', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'A fancy test string']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'A fancy test string']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'A fancy test string' },
@@ -1012,7 +1007,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'value']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'value' },
@@ -1033,12 +1028,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value contains the seed', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'A fancy string']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'A fancy string']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'A fancy string' },
@@ -1051,7 +1043,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1072,12 +1064,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value contains the alpha characters only', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'AFancyString']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'AFancyString']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'AFancyString' },
@@ -1090,7 +1079,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test123']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test123' },
@@ -1111,12 +1100,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value contains the alphanumeric characters only', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'AFancyString123']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'AFancyString123']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'AFancyString123' },
@@ -1127,12 +1113,9 @@ describe('conform-class-validator', () => {
 
         test('it shows errors if value contains spaces characters', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'test123 test']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'test123 test']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test123 test' },
@@ -1155,7 +1138,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '9.11']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: '9.11' },
@@ -1168,7 +1151,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1191,7 +1174,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'a!1?/{}[]']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'a!1?/{}[]' },
@@ -1204,7 +1187,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '💩💩💩💩']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '💩💩💩💩' },
@@ -1225,12 +1208,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is not Base32 encoded', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'KRSXG5BAKRSXG5A=']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'KRSXG5BAKRSXG5A=']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'KRSXG5BAKRSXG5A=' },
@@ -1243,7 +1223,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1264,12 +1244,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is not Base52 encoded', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '7YHPehwVrU9e2b']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '7YHPehwVrU9e2b']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: '7YHPehwVrU9e2b' },
@@ -1282,7 +1259,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '123!!!']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '123!!!' },
@@ -1303,12 +1280,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is not Base64 encoded', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'dGVzdCB0ZXN0']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'dGVzdCB0ZXN0']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'dGVzdCB0ZXN0' },
@@ -1321,7 +1295,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '123!!!']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '123!!!' },
@@ -1342,12 +1316,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a IBAN number', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'PL10105000997603123456789123']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'PL10105000997603123456789123']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'PL10105000997603123456789123' },
@@ -1360,7 +1331,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1383,7 +1354,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'HBUKGB4B']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'HBUKGB4B' },
@@ -1396,7 +1367,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1419,7 +1390,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'Test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'Test' },
@@ -1432,7 +1403,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 't']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 't' },
@@ -1445,12 +1416,9 @@ describe('conform-class-validator', () => {
 
         test('it shows errors if value does not meet the maximum byte length', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'test test test test']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'test test test test']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test test test test' },
@@ -1473,12 +1441,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a valid credit card number', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '5425233430109903']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '5425233430109903']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: { name: '5425233430109903' },
@@ -1489,12 +1454,9 @@ describe('conform-class-validator', () => {
 
         test('it shows errors if value is not a valid credit card number', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '0000000000000']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '0000000000000']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '0000000000000' },
@@ -1519,7 +1481,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '$15.01']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: '$15.01' },
@@ -1532,7 +1494,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1557,7 +1519,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'USD']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: { name: 'USD' },
@@ -1570,7 +1532,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1594,13 +1556,11 @@ describe('conform-class-validator', () => {
         test('it does not show errors if value is a valid Ethereum Address', () => {
           expect(
             parseWithClassValidator(
-              createFormData([
-                ['name', '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'],
-              ]),
+              createFormData([['name', '0x71C7656EC7ab88b098defB751B7401B5f6d8976F']]),
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: { name: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' },
@@ -1613,7 +1573,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1640,8 +1600,8 @@ describe('conform-class-validator', () => {
               createFormData([['name', '3FZbgi29cpjq2GjdwV111HuJJnkLtktZc5']]),
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: { name: '3FZbgi29cpjq2GjdwV111HuJJnkLtktZc5' },
@@ -1654,7 +1614,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1686,8 +1646,8 @@ describe('conform-class-validator', () => {
               ]),
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -1704,7 +1664,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1727,12 +1687,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a valid email', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'contact@trackbook.it']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'contact@trackbook.it']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -1749,7 +1706,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1772,12 +1729,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a valid domain', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'trackbook.it']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'trackbook.it']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -1794,7 +1748,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1819,7 +1773,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test ⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -1836,7 +1790,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -1861,7 +1815,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -1878,7 +1832,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
@@ -1903,7 +1857,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test ⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -1920,14 +1874,12 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
             error: {
-              name: [
-                'name must contain a full-width and half-width characters',
-              ],
+              name: ['name must contain a full-width and half-width characters'],
             },
             reply: expect.any(Function),
           });
@@ -1947,7 +1899,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '#111111']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -1964,7 +1916,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
@@ -1987,12 +1939,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a hsl color', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'hsl(0, 0%, 7%)']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'hsl(0, 0%, 7%)']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2009,7 +1958,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
@@ -2034,7 +1983,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'rgb(0,0,0)']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2051,7 +2000,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
@@ -2076,7 +2025,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '04060421139']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2093,7 +2042,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
@@ -2118,7 +2067,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'EN7313144']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2135,7 +2084,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
@@ -2160,7 +2109,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '91-464']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2177,7 +2126,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '⓵⓵⓵⓵']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '⓵⓵⓵⓵' },
@@ -2202,7 +2151,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '123']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2219,7 +2168,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '1-1']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '1-1' },
@@ -2244,7 +2193,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '123']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2261,7 +2210,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '89']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '89' },
@@ -2284,12 +2233,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a MAC address', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '89-F2-78-8F-CA-5B']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '89-F2-78-8F-CA-5B']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2306,7 +2252,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00-0']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00-0' },
@@ -2329,12 +2275,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a IP address', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '46.105.108.213']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '46.105.108.213']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2351,7 +2294,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00-0']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00-0' },
@@ -2376,7 +2319,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '5741']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2393,7 +2336,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00' },
@@ -2416,12 +2359,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a valid ISBN number', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '978-83-240-9979-5']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '978-83-240-9979-5']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2438,7 +2378,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00' },
@@ -2461,12 +2401,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a valid EAN number', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', '9788324099795']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', '9788324099795']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2483,7 +2420,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00' },
@@ -2506,12 +2443,9 @@ describe('conform-class-validator', () => {
 
         test('it does not show errors if value is a valid ISIN number', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'US0004026250']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'US0004026250']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'success',
             payload: {
@@ -2528,7 +2462,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00' },
@@ -2556,8 +2490,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2574,7 +2508,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00' },
@@ -2607,8 +2541,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2625,7 +2559,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', '00']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: '00' },
@@ -2643,7 +2577,7 @@ describe('conform-class-validator', () => {
           }
 
           @IsObject()
-          obj: Object;
+          obj: object;
         }
 
         test('it does not show errors if value is a valid object', () => {
@@ -2653,8 +2587,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2671,7 +2605,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['obj', 'null']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { obj: 'null' },
@@ -2689,7 +2623,7 @@ describe('conform-class-validator', () => {
           }
 
           @IsNotEmptyObject()
-          obj: Object;
+          obj: object;
         }
 
         test('it does not show errors if value is a not empty object', () => {
@@ -2699,8 +2633,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2717,7 +2651,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['obj', '{}']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { obj: '{}' },
@@ -2745,8 +2679,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2763,7 +2697,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'Test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'Test' },
@@ -2791,8 +2725,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2809,7 +2743,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -2837,8 +2771,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2855,7 +2789,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -2883,8 +2817,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2901,7 +2835,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -2929,8 +2863,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2947,7 +2881,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -2975,8 +2909,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -2993,7 +2927,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3021,8 +2955,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3039,7 +2973,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3067,8 +3001,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3085,7 +3019,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3113,8 +3047,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3131,7 +3065,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3159,8 +3093,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3177,7 +3111,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3205,8 +3139,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3223,58 +3157,12 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
             error: {
               name: ['name must contain one or more multibyte chars'],
-            },
-            reply: expect.any(Function),
-          });
-        });
-      });
-      describe('@IsNumberString', () => {
-        class TestModel {
-          constructor(data: ITypePayload) {
-            this.name = data.name;
-          }
-
-          @IsNumberString()
-          name: string;
-        }
-
-        test('it does not show errors if value a numeric string', () => {
-          expect(
-            parseWithClassValidator(
-              createFormData([['name', '123']]),
-
-              {
-                schema: TestModel,
-              },
-            ),
-          ).toEqual({
-            status: 'success',
-            payload: {
-              name: '123',
-            },
-            value: {
-              name: '123',
-            },
-            reply: expect.any(Function),
-          });
-        });
-
-        test('it shows errors if value is not a numeric string', () => {
-          expect(
-            parseWithClassValidator(createFormData([['name', 'test']]), {
-              schema: TestModel,
-            }),
-          ).toEqual({
-            status: 'error',
-            payload: { name: 'test' },
-            error: {
-              name: ['name must be a number string'],
             },
             reply: expect.any(Function),
           });
@@ -3297,8 +3185,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3315,7 +3203,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3343,8 +3231,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3361,7 +3249,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3389,8 +3277,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3407,7 +3295,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3432,16 +3320,13 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(
               createFormData([
-                [
-                  'name',
-                  'magnet:?xt=urn:btih:5dee65101db281ac9c46344cd6b175cdcad53426&dn',
-                ],
+                ['name', 'magnet:?xt=urn:btih:5dee65101db281ac9c46344cd6b175cdcad53426&dn'],
               ]),
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3458,7 +3343,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3482,14 +3367,12 @@ describe('conform-class-validator', () => {
         test('it does not show errors if value is a valid UUID', () => {
           expect(
             parseWithClassValidator(
-              createFormData([
-                ['name', '73cc27af-bd0d-4c16-a2f0-c246425faebe'],
-              ]),
+              createFormData([['name', '73cc27af-bd0d-4c16-a2f0-c246425faebe']]),
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3506,7 +3389,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3534,8 +3417,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3552,7 +3435,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3580,8 +3463,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3598,7 +3481,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'test']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test' },
@@ -3626,8 +3509,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3644,7 +3527,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -3672,8 +3555,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3690,7 +3573,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'a']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'a' },
@@ -3718,8 +3601,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3736,7 +3619,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -3764,8 +3647,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3782,7 +3665,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -3810,8 +3693,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3828,14 +3711,12 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
             error: {
-              name: [
-                'name must be a valid representation of military time in the format HH:MM',
-              ],
+              name: ['name must be a valid representation of military time in the format HH:MM'],
             },
             reply: expect.any(Function),
           });
@@ -3858,8 +3739,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3876,7 +3757,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -3901,16 +3782,13 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(
               createFormData([
-                [
-                  'name',
-                  'b8d7090218b8e0a3d6377119a37aacb20f942c1e0f7f7c87c4fd3928fb00435f',
-                ],
+                ['name', 'b8d7090218b8e0a3d6377119a37aacb20f942c1e0f7f7c87c4fd3928fb00435f'],
               ]),
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3927,7 +3805,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -3955,8 +3833,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -3973,7 +3851,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -4001,8 +3879,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4019,7 +3897,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -4047,8 +3925,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4065,7 +3943,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -4093,8 +3971,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4111,7 +3989,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -4139,8 +4017,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4157,7 +4035,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -4185,8 +4063,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4203,7 +4081,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -4231,8 +4109,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4249,7 +4127,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([['name', 'aaaaaa']]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa' },
@@ -4277,8 +4155,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4293,12 +4171,9 @@ describe('conform-class-validator', () => {
 
         test('it shows errors if value array contains the given value', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'aaaaaa,found']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'aaaaaa,found']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'aaaaaa,found' },
@@ -4326,8 +4201,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4344,7 +4219,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: {},
@@ -4372,8 +4247,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4390,7 +4265,7 @@ describe('conform-class-validator', () => {
           expect(
             parseWithClassValidator(createFormData([]), {
               schema: TestModel,
-            }),
+            })
           ).toEqual({
             status: 'error',
             payload: {},
@@ -4418,8 +4293,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4434,12 +4309,9 @@ describe('conform-class-validator', () => {
 
         test('it shows errors if value array is not the given size or smaller', () => {
           expect(
-            parseWithClassValidator(
-              createFormData([['name', 'test,test2,test3,test4,test6']]),
-              {
-                schema: TestModel,
-              },
-            ),
+            parseWithClassValidator(createFormData([['name', 'test,test2,test3,test4,test6']]), {
+              schema: TestModel,
+            })
           ).toEqual({
             status: 'error',
             payload: { name: 'test,test2,test3,test4,test6' },
@@ -4467,8 +4339,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'success',
             payload: {
@@ -4488,8 +4360,8 @@ describe('conform-class-validator', () => {
 
               {
                 schema: TestModel,
-              },
-            ),
+              }
+            )
           ).toEqual({
             status: 'error',
             payload: { name: 'test,test,test3,test4,test5' },
