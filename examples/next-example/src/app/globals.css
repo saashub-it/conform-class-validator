@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+main {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+hr {
+  margin: 30px 0;
+  color: gainsboro;
+}
+
+label {
+  display: block;
+}
+
+.form-error {
+  color: red;
+}
+
+input.error {
+  outline: red;
+  color: red;
+  border: 1px solid red;
+}
+
+input.error + div {
+  color: red;
+}
