@@ -96,6 +96,7 @@ import {
   MinLength,
   NotContains,
   NotEquals,
+  ValidateNested,
 } from 'class-validator';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -4386,6 +4387,82 @@ describe('conform-class-validator', () => {
             payload: { name: 'test,test,test3,test4,test5' },
             error: {
               tags: ["All tags's elements must be unique"],
+            },
+            reply: expect.any(Function),
+          });
+        });
+      });
+      describe('@ValidateNested', () => {
+        interface INameObject {
+          name: string;
+        }
+
+        class TestSubModel {
+          constructor(data: INameObject) {
+            this.name = data.name;
+          }
+
+          @IsNotEmpty()
+          name: string;
+        }
+
+        class TestModel {
+          constructor(data: ITypePayload) {
+            this.names = (data.name ? data.name.split(',') : []).map(
+              (name) => new TestSubModel({ name })
+            );
+          }
+
+          @ValidateNested({ each: true })
+          names: INameObject[];
+        }
+
+        test('all names filled, no error', () => {
+          expect(
+            parseWithClassValidator(createFormData([['name', ['John', 'Adam']]]), {
+              schema: TestModel,
+            })
+          ).toEqual({
+            status: 'success',
+            payload: {
+              name: 'John,Adam',
+            },
+            value: {
+              names: [new TestSubModel({ name: 'John' }), new TestSubModel({ name: 'Adam' })],
+            },
+            reply: expect.any(Function),
+          });
+        });
+
+        test('one name as an empty string', () => {
+          expect(
+            parseWithClassValidator(createFormData([['name', ['John', '']]]), {
+              schema: TestModel,
+            })
+          ).toEqual({
+            status: 'error',
+            payload: {
+              name: 'John,',
+            },
+            error: {
+              names: ['[1]: name should not be empty'],
+            },
+            reply: expect.any(Function),
+          });
+        });
+
+        test('both names as an empty string', () => {
+          expect(
+            parseWithClassValidator(createFormData([['name', ['', '']]]), {
+              schema: TestModel,
+            })
+          ).toEqual({
+            status: 'error',
+            payload: {
+              name: ',',
+            },
+            error: {
+              names: ['[0]: name should not be empty', '[1]: name should not be empty'],
             },
             reply: expect.any(Function),
           });

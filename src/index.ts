@@ -1,5 +1,5 @@
 import { parse, type Submission } from '@conform-to/dom';
-import { validate, validateSync, type ValidationError } from 'class-validator';
+import { validate, validateSync, ValidationError } from 'class-validator';
 
 export class ModelCreationError extends Error {}
 
@@ -46,7 +46,24 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 
       const resolveError = (errors: ValidationError[]): TError =>
         errors.reduce((acc: TError, current: ValidationError) => {
-          acc[current.property] = current.constraints ? Object.values(current.constraints) : [];
+          const { target, property, constraints, children } = current;
+
+          // @ts-ignore
+          const propFromTarget = target[property] as unknown;
+
+          if (
+            (Array.isArray(propFromTarget) &&
+              propFromTarget.length > 0 &&
+              !propFromTarget.some((arrayValue) => typeof arrayValue !== 'object')) ||
+            Number(property) > -1
+          ) {
+            acc[property] = Object.values(resolveError(children as ValidationError[])).map(
+              (error) =>
+                Number(property) > -1 ? `[${property}]: ${error.join(', ')}` : error.join(', ')
+            );
+          } else {
+            acc[property] = constraints ? Object.values(constraints) : [];
+          }
 
           return acc;
         }, {});
