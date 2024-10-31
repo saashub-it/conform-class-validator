@@ -1,4 +1,7 @@
 export default {
+  prettier: {
+    sources: ['./src', './examples']
+  },
   eslint: [
     {
       template: '@saashub/qoq-eslint-v9-ts',
