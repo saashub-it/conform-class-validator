@@ -1,5 +1,7 @@
-import { type Submission, parse } from '@conform-to/dom';
-import { type ValidationError, validate, validateSync } from 'class-validator';
+import { parse, type Submission } from '@conform-to/dom';
+import { validate, validateSync, ValidationError } from 'class-validator';
+
+export class ModelCreationError extends Error {}
 
 class ConformClassValidatorModel<T extends Record<string, any>> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, sonarjs/no-useless-constructor
@@ -44,14 +46,30 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 
       const resolveError = (errors: ValidationError[]): TError =>
         errors.reduce((acc: TError, current: ValidationError) => {
-          acc[current.property] = current.constraints ? Object.values(current.constraints) : [];
+          const { target, property, constraints, children } = current;
+
+          // @ts-ignore
+          const propFromTarget = target[property] as unknown;
+
+          if (
+            (Array.isArray(propFromTarget) &&
+              propFromTarget.length > 0 &&
+              !propFromTarget.some((arrayValue) => typeof arrayValue !== 'object')) ||
+            Number(property) > -1
+          ) {
+            acc[property] = Object.values(resolveError(children as ValidationError[])).map(
+              (error) =>
+                Number(property) > -1 ? `[${property}]: ${error.join(', ')}` : error.join(', ')
+            );
+          } else {
+            acc[property] = constraints ? Object.values(constraints) : [];
+          }
 
           return acc;
         }, {});
 
       try {
         const model = new Model(payload as T);
-
         const resolveSubmission = (
           errors: ValidationError[]
         ): { value: undefined; error: TError } | { value: T; error: undefined } => {
@@ -75,7 +93,10 @@ export function parseWithClassValidator<T extends Record<string, any>>(
         }
 
         return validate(model).then(resolveSubmission);
-      } catch {
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new ModelCreationError(`Failed to contruct Model for validation`);
+        }
         throw new Error('Bad validation model passed!');
       }
     },

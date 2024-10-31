@@ -44,7 +44,7 @@ properties:
 #### ✅ Do:
 
 ```ts
-constructor(init:ExampleModel)
+constructor(init:ExampleModel, ...)
 {
   this.foo = init.foo;
   this.bar = init.bar;
@@ -59,6 +59,50 @@ constructor(foo:string, bar:string) {
   this.bar = bar;
 }
 ```
+
+### Casting
+
+[FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) is always a `Record<string,string>`. This results in the need for casting in order to use non-string `class-validator` validations.
+
+For Example:
+
+#### ❌ Won't work
+
+```ts
+class CastingModel {
+ constructor(init:ExampleModel) {
+     this.foo = init.foo;
+ }
+ 
+ @IsInt()
+ foo:string
+ 
+}
+```
+
+If we do not cast the entry `FormData` `foo` will always be a `string` meaning that it will _never_ pass the `@IsInt()` validation.
+
+#### ✅ Will work:
+
+
+```ts
+class CastingModel {
+ constructor(init:ExampleModel) {
+  this.foo = Number(init.foo);
+ }
+
+ @IsInt()
+ foo:number
+
+}
+```
+
+
+**Be careful when casting, any error in the constructor will be rethrown by the library as a `ModelCreationError`.** 
+
+
+
+
 
 ### Implementing Form validation
 
