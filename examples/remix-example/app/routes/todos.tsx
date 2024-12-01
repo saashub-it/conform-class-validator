@@ -4,26 +4,29 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { parseWithClassValidator } from '../../../../src/index';
-import { IsDefined, IsOptional, IsBoolean, ValidateNested } from 'class-validator';
+import { IsDefined, IsOptional, IsBoolean, ValidateNested, IsIn } from 'class-validator';
 
 class TaskModel {
-  constructor(task: { content: string; completed: string }) {
+  constructor(task: TaskModel) {
     this.content = task.content;
-    this.completed = task.completed;
+    this.completed = task.completed || 'off';
   }
 
   @IsDefined()
+  @IsOptional()
   content: string;
 
   @IsOptional()
-  @IsBoolean()
+  @IsIn(['on', 'off'])
   completed: string;
 }
 
 class TodoModel {
-  constructor(todo: { title: string; tasks: { content: string; completed: string }[] }) {
+  constructor(todo: TodoModel) {
+    const filteredTasks = todo?.tasks?.filter(Boolean);
+    console.log('filteredTasks', filteredTasks);
     this.title = todo.title;
-    this.tasks = todo.tasks.map((task) => new TaskModel(task));
+    this.tasks = filteredTasks?.length > 0 ? filteredTasks.map((task) => new TaskModel(task)) : [];
   }
 
   @IsDefined()
@@ -38,11 +41,9 @@ export async function action({ request }: ActionFunctionArgs) {
   const submission = parseWithClassValidator(formData, {
     schema: TodoModel,
   });
-
   if (submission.status !== 'success') {
     return json(submission.reply());
   }
-
   return redirect(`/?value=${JSON.stringify(submission.value)}`);
 }
 
@@ -56,7 +57,7 @@ export default function Example() {
     shouldValidate: 'onBlur',
   });
   const tasks = fields.tasks.getFieldList();
-
+  console.log(tasks);
   return (
     <Form method="post" {...getFormProps(form)}>
       <div>
@@ -71,9 +72,10 @@ export default function Example() {
       <div className="form-error">{fields.tasks.errors}</div>
       {tasks.map((task, index) => {
         const taskFields = task.getFieldset();
+        console.log(getInputProps(taskFields.content, { type: 'text' }));
 
         return (
-          <fieldset key={getFieldsetProps(task).id} {...getFieldsetProps(task)}>
+          <fieldset key={getFieldsetProps(task).id} name={getFieldsetProps(task).name}>
             <div>
               <label>Task #{index + 1}</label>
               <input

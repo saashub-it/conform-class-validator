@@ -68,8 +68,9 @@ export function parseWithClassValidator<T extends Record<string, any>>(
           return acc;
         }, {});
 
-      try {console.log(payload)
+      try {
         const model = new Model(payload as T);
+        console.log('model', model);
         const resolveSubmission = (
           errors: ValidationError[]
         ): { value: undefined; error: TError } | { value: T; error: undefined } => {
@@ -94,7 +95,7 @@ export function parseWithClassValidator<T extends Record<string, any>>(
 
         return validate(model).then(resolveSubmission);
       } catch (error) {
-        console.log(error)
+        console.log(error);
         if (error instanceof TypeError) {
           throw new ModelCreationError(`Failed to contruct Model for validation`);
         }
